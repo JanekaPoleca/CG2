@@ -26,8 +26,11 @@ main = () => {
 
     let m1 = new Sphere(gl, 1, 20, p1);
     m1.addTranslation(5,0,0);
-    m1.addRotationZ(.07);
+    m1.addRotationZ(.2);
     planets.push(m1);
+
+
+
 
     let p3 = new Sphere(gl, 1, 20, universe);
 
