@@ -23,14 +23,11 @@ let main = () => {
     const gl = initwebgl()
     
     let universe = new Universe(gl);
-    let star = new Sphere(gl, 20, 70, universe);
     
-    let p1 = new Sphere(gl, 5, 20, universe);
-    p1.addRotationZ(0.03);
-    p1.addTranslation(30,0,0);
-    p1.addRotationZ(0.04);
+    let p1 = new Sphere(gl, 20, 20, 0.4, 0.01, '/res/earth.jpg', universe);
+    p1.addTranslation(100,0,0);
 
-    let p2 = new Sphere(gl, 3, 20, universe);
+    /*let p2 = new Sphere(gl, 3, 20, universe);
     p2.addRotationZ(0.025);
     p2.addTranslation(42,0,0);
     p2.addRotationZ(0.012);
@@ -84,13 +81,15 @@ let main = () => {
     c1.addEllipseZ(160, 60, -0.0004);
 
     let planets =  [universe, star, p1, p2, p3, s1, p4, p5, s2, s3, s4, p6, r1, c1];
+    */
 
+    let planets = [universe, p1];
 
 
     const update = time => {
         planets.forEach(p => p.update(time))
     }
-
+    
     const render = time => {
         planets.forEach(p => p.update(time))
         planets.forEach(p => p.render(gl, time))
