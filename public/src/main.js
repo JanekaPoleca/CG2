@@ -83,12 +83,11 @@ let main = () => {
     c1.addTranslation(100, 0, 0);
     c1.addEllipseZ(160, 60, -0.0004);
 
-    let planets = [star, p1, p2, p3, s1, p4, p5, s2, s3, s4, p6, r1, c1];
+    let planets =  [universe, star, p1, p2, p3, s1, p4, p5, s2, s3, s4, p6, r1, c1];
 
 
 
     const update = time => {
-        universe.update(time)
         planets.forEach(p => p.update(time))
     }
 
