@@ -1,3 +1,5 @@
+import * as twgl from 'twgl.js'
+
 const {m4} = twgl
 
 initwebgl = () => {
