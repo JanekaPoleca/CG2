@@ -1,8 +1,11 @@
-import * as twgl from 'twgl.js'
+import * as twgl from '../lib/twgl-full'
+import Sphere from './visualObjects/sphere'
+import Universe from './visualObjects/universe'
 
 const {m4} = twgl
 
-initwebgl = () => {
+
+let initwebgl = () => {
     const gl = document.querySelector("canvas").getContext("webgl")
     if (!gl) {
         throw 'webgl not supported'
@@ -14,7 +17,8 @@ initwebgl = () => {
     return gl
 }
 
-main = () => {
+let main = () => {
+
     const gl = initwebgl()
     
     let universe = new Universe(gl);
@@ -74,12 +78,12 @@ main = () => {
 
 
 
-    update = time => {
+    const update = time => {
         universe.update(time)
         planets.forEach(p => p.update(time))
     }
 
-    render = time => {
+    const render = time => {
         update(time)
         universe.render(gl, time)
         planets.forEach(p => p.render(gl, time))
