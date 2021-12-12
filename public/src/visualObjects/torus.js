@@ -65,15 +65,15 @@ import {m4, primitives} from '../../lib/twgl-full'
     }
 
     addRotationX(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationX(degreesToRad(alpha)* staticRotation ? 1 : time)});
+        this.transformations.push( (time) => { return m4.rotationX(degreesToRad(alpha)* (staticRotation ? 1 : time))});
     }
 
     addRotationY(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationY(degreesToRad(alpha)* staticRotation ? 1 : time)});
+        this.transformations.push( (time) => { return m4.rotationY(degreesToRad(alpha)* (staticRotation ? 1 : time))});
     }
 
     addRotationZ(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationZ(degreesToRad(alpha)* staticRotation ? 1 : time)});
+        this.transformations.push( (time) => { return m4.rotationZ(degreesToRad(alpha)* (staticRotation ? 1 : time))});
     }
 
 }
