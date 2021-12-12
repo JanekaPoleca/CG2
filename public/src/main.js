@@ -74,18 +74,10 @@ let main = () => {
     p6.addTranslation(210,0,0);
     p6.addRotationZ(0.002);
 
-    let planets = [star, p1, p2, p3, m1, p4, p5, m2, m3, m4, p6];
-
-
-
-    const update = time => {
-        universe.update(time)
-        planets.forEach(p => p.update(time))
-    }
+    let planets = [universe, star, p1, p2, p3, m1, p4, p5, m2, m3, m4, p6];
 
     const render = time => {
-        update(time)
-        universe.render(gl, time)
+        planets.forEach(p => p.update(time))
         planets.forEach(p => p.render(gl, time))
         requestAnimationFrame(render)
     }
