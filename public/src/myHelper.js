@@ -1,3 +1,7 @@
+import * as twgl from 'twgl.js'
+
+const {m4} = twgl
+
 /**
  * VisualObject Abstract Class
  */
@@ -158,4 +162,9 @@ class Universe extends VisualObject {
 
 const degreesToRad = deg => {
     return deg*Math.PI/180;
+}
+
+export default {
+    Sphere,
+    Universe
 }
