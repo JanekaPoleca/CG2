@@ -31,9 +31,9 @@ let main = () => {
     p1.addRotationZ(0.04);
 
     let p2 = new Sphere(gl, 3, 20, universe);
-    p2.addRotationZ(0.035);
+    p2.addRotationZ(0.025);
     p2.addTranslation(42,0,0);
-    p2.addRotationZ(0.01);
+    p2.addRotationZ(0.012);
 
     let p3 = new Sphere(gl, 7, 25, universe);
     p3.addRotationZ(0.02);
@@ -53,7 +53,7 @@ let main = () => {
     let p5 = new Sphere(gl, 10, 25, universe);
     p5.addRotationZ(0.001);
     p5.addTranslation(150,0,0);
-    p5.addRotationZ(0.012);
+    p5.addRotationZ(0.011);
 
     let s2 = new Sphere(gl, 2, 10, p5);
     s2.addRotationZ(0.1);
@@ -61,7 +61,7 @@ let main = () => {
     s2.addRotationZ(0.1);
 
     let s3 = new Sphere(gl, 4, 20, p5);
-    s3.addRotationZ(0.2);
+    s3.addRotationZ(0.05);
     s3.addTranslation(25,0,0);
     s3.addRotationZ(0.07);
 
@@ -78,9 +78,9 @@ let main = () => {
     let r1 = new Torus(gl, 25, 3, 20, 20, p6);
     r1.addRotationX(80, true);
 
-    let c1 = new Sphere(gl, 2, 20, universe);
+    let c1 = new Sphere(gl, 2, 10, universe);
     c1.addTranslation(100, 0, 0);
-    c1.addEllipseZ(200, 50, -0.0005);
+    c1.addEllipseZ(160, 60, -0.0004);
 
     let planets = [star, p1, p2, p3, s1, p4, p5, s2, s3, s4, p6, r1, c1];
 
