@@ -20,9 +20,9 @@ import {m4, resizeCanvasToDisplaySize} from '../../lib/twgl-full'
         const fov = 30 * Math.PI / 180;
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         const zNear = 0.5;
-        const zFar = 205;
+        const zFar = 1000;
         const projection = m4.perspective(fov, aspect, zNear, zFar);
-        const eye = [0, 50, 20];
+        const eye = [0, 200, 400];
         const target = [0, 0, 0];
         const up = [0, -1, 0];
 
