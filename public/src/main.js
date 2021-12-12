@@ -76,7 +76,8 @@ let main = () => {
     p6.addRotationZ(0.002);
 
     let r1 = new Torus(gl, 25, 3, 20, 20, p6);
-    r1.addRotationX(80, true);
+    r1.addRotationX(70, true);
+    r1.addRotationZ(0.01);
 
     let c1 = new Sphere(gl, 2, 10, universe);
     c1.addTranslation(100, 0, 0);
