@@ -3,9 +3,9 @@ import {m4, primitives} from '../../lib/twgl-full'
 
 
 /**
- * Sphere Class
+ * Torus Class
  */
- class Sphere extends VisualObject {
+ class Torus extends VisualObject {
     static vs = `
     uniform mat4 u_worldViewProjection;
     uniform mat4 u_transform;
@@ -28,9 +28,9 @@ import {m4, primitives} from '../../lib/twgl-full'
         gl_FragColor = norm * vec4(1, 1, 1, 1);
     }`
 
-    constructor(gl, radius, divs, parent ) {
+    constructor(gl, radius, thickness, radialSub, bodySub, parent) {
         super(gl, parent)
-        this.bufferInfo = primitives.createSphereBufferInfo(gl, radius, divs, divs)
+        this.bufferInfo = primitives.createTorusBufferInfo(gl, radius, thickness, radialSub, bodySub)
 
         this.transformations = []
 
@@ -65,24 +65,15 @@ import {m4, primitives} from '../../lib/twgl-full'
     }
 
     addRotationX(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationX(degreesToRad(alpha) * (staticRotation ? 1 : time))});
+        this.transformations.push( (time) => { return m4.rotationX(degreesToRad(alpha)* staticRotation ? 1 : time)});
     }
 
     addRotationY(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationY(degreesToRad(alpha) * (staticRotation ? 1 : time))});
+        this.transformations.push( (time) => { return m4.rotationY(degreesToRad(alpha)* staticRotation ? 1 : time)});
     }
 
     addRotationZ(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationZ(degreesToRad(alpha) * (staticRotation ? 1 : time))});
-    }
-
-    addEllipseZ(a, b, alpha){
-        this.transformations.push( (time) => { return [
-            1,0,0,a*Math.cos(alpha*time),
-            0,1,0,b*Math.sin(alpha*time),
-            0,0,1,0,
-            0,0,0,1
-        ]});
+        this.transformations.push( (time) => { return m4.rotationZ(degreesToRad(alpha)* staticRotation ? 1 : time)});
     }
 
 }
@@ -91,4 +82,4 @@ const degreesToRad = deg => {
     return deg*Math.PI/180;  
 }
 
-export default Sphere
+export default Torus
