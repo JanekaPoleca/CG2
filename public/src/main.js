@@ -1,7 +1,9 @@
 import * as twgl from '../lib/twgl-full'
-import Sphere from './visualObjects/sphere'
-import Torus from './visualObjects/torus'
 import Universe from './visualObjects/universe'
+import Planet from './visualObjects/planet'
+import Star from './visualObjects/star'
+import Satellite from './visualObjects/satellite'
+import Torus from './visualObjects/torus'
 
 const {m4} = twgl
 
@@ -23,7 +25,7 @@ let main = () => {
     const gl = initwebgl()
     
     let universe = new Universe(gl)
-    
+
     let p1 = new Sphere(gl, 20, 20, 0.04, 0.01, './res/mars.jpg', universe);
     p1.addTranslation(70,0,0);
 
@@ -33,47 +35,47 @@ let main = () => {
     let p3 = new Sphere(gl, 10, 20, 10, 0.1, './res/clouds.jpg', universe);
     p3.addTranslation(30,0,0);
 
-    /*let p2 = new Sphere(gl, 3, 20, universe);
+    /*let p2 = new Planet(gl, 3, 20, universe);
     p2.addRotationZ(0.025);
     p2.addTranslation(42,0,0);
     p2.addRotationZ(0.012);
 
-    let p3 = new Sphere(gl, 7, 25, universe);
+    let p3 = new Planet(gl, 7, 25, universe);
     p3.addRotationZ(0.02);
     p3.addTranslation(72,0,0);
     p3.addRotationZ(0.007);
-
-    let s1 = new Sphere(gl, 2, 10, p3);
-    s1.addRotationZ(0.04);
-    s1.addTranslation(12,0,0);
-    s1.addRotationZ(0.06);
-    
-    let p4 = new Sphere(gl, 12, 25, universe);
+    */
+    let s1 = new Satellite(gl, 5, 10, 0.04, 0.06, '/res/earth.jpg', p1);
+    //s1.addRotationZ(0.04);
+    s1.addTranslation(20,0,0);
+    //s1.addRotationZ(0.06);
+    /*
+    let p4 = new Planet(gl, 12, 25, universe);
     p4.addRotationZ(0.1);
     p4.addTranslation(102,0,0);
     p4.addRotationZ(0.005);
 
-    let p5 = new Sphere(gl, 10, 25, universe);
+    let p5 = new Planet(gl, 10, 25, universe);
     p5.addRotationZ(0.001);
     p5.addTranslation(150,0,0);
     p5.addRotationZ(0.011);
 
-    let s2 = new Sphere(gl, 2, 10, p5);
+    let s2 = new Planet(gl, 2, 10, p5);
     s2.addRotationZ(0.1);
     s2.addTranslation(13,0,0);
     s2.addRotationZ(0.1);
 
-    let s3 = new Sphere(gl, 4, 20, p5);
+    let s3 = new Planet(gl, 4, 20, p5);
     s3.addRotationZ(0.05);
     s3.addTranslation(25,0,0);
     s3.addRotationZ(0.07);
 
-    let s4 = new Sphere(gl, 1, 8, s3);
+    let s4 = new Planet(gl, 1, 8, s3);
     s4.addRotationZ(0.5);
     s4.addTranslation(6,0,0);
     s4.addRotationZ(0.5);
 
-    let p6 = new Sphere(gl, 20, 25, universe);
+    let p6 = new Planet(gl, 20, 25, universe);
     p6.addRotationZ(0.002);
     p6.addTranslation(210,0,0);
     p6.addRotationZ(0.002);
@@ -82,14 +84,14 @@ let main = () => {
     r1.addRotationX(70, true);
     r1.addRotationZ(0.01);
 
-    let c1 = new Sphere(gl, 2, 10, universe);
+    let c1 = new Planet(gl, 2, 10, universe);
     c1.addTranslation(100, 0, 0);
     c1.addEllipseZ(160, 60, -0.0004);
 
     let planets =  [universe, star, p1, p2, p3, s1, p4, p5, s2, s3, s4, p6, r1, c1];
     */
 
-    let planets = [universe, p1, p2, p3];
+    let planets = [universe, p1, p2, p3, s1];
 
 
     const update = time => {

@@ -3,9 +3,9 @@ import {m4, primitives, createTexture} from '../../lib/twgl-full'
 
 
 /**
- * Sphere Class
+ * Star Class
  */
- class Sphere extends VisualObject {
+ class Star extends VisualObject {
     static vs = `
     uniform mat4 u_worldViewProjection;
     uniform vec3 u_lightWorldPos;
@@ -114,28 +114,10 @@ import {m4, primitives, createTexture} from '../../lib/twgl-full'
         super.render(gl, time)
     }
 
-    addTranslation(x, y, z) {
-        this.transformations.push( (time) => { return [
-            1,0,0,x,
-            0,1,0,y,
-            0,0,1,z,
-            0,0,0,1
-        ]});
-    }
-    
-    addEllipseZ(a, b, alpha){
-        this.transformations.push( (time) => { return [
-            1,0,0,a*Math.cos(alpha*time),
-            0,1,0,b*Math.sin(alpha*time),
-            0,0,1,0,
-            0,0,0,1
-        ]});
-    }
-
 }
 
 const degreesToRad = deg => {
     return deg*Math.PI/180;  
 }
 
-export default Sphere
+export default Star
