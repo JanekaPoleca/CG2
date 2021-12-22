@@ -26,13 +26,13 @@ let main = () => {
     
     let universe = new Universe(gl)
 
-    let p1 = new Sphere(gl, 20, 20, 0.04, 0.01, './res/mars.jpg', universe);
+    let p1 = new Planet(gl, 20, 20, 0.04, 0.01, './res/mars.jpg', universe);
     p1.addTranslation(70,0,0);
 
-    let p2 = new Sphere(gl, 30, 20, 20, .06, './res/jupiter.jpg', universe);
+    let p2 = new Planet(gl, 30, 20, 20, .06, './res/jupiter.jpg', universe);
     p2.addTranslation(150,0,0);
 
-    let p3 = new Sphere(gl, 10, 20, 10, 0.1, './res/clouds.jpg', universe);
+    let p3 = new Planet(gl, 10, 20, 10, 0.1, './res/clouds.jpg', universe);
     p3.addTranslation(30,0,0);
 
     /*let p2 = new Planet(gl, 3, 20, universe);
