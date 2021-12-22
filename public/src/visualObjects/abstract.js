@@ -17,7 +17,7 @@ class VisualObject {
 
     update() {
         if (this.parent) {
-            this.uniforms = {...this.uniforms, ...this.parent.uniforms}
+            this.uniforms = {...this.parent.uniforms, ...this.uniforms}
         }
     }
 

@@ -1,21 +1,38 @@
 import VisualObject from './abstract'
-import {m4, resizeCanvasToDisplaySize} from '../../lib/twgl-full'
+import {m4, resizeCanvasToDisplaySize, createBufferInfoFromArrays, createTexture} from '../../lib/twgl-full'
 
 /**
  * Universe Class
  */
  class Universe extends VisualObject {
     static vs = `
+    attribute vec3 positions;
+    attribute vec2 texcoord;
+
+    uniform mat4 u_p_transform;
+    uniform mat4 u_worldViewProjection;
+
+    varying vec2 tex;
+
     void main() {
+        tex = texcoord; 
+        gl_Position = vec4(positions, 1);
     }`
     static fs = `
-    void main() {
+    precision mediump float;
+
+    uniform sampler2D u_diffuse;
+
+    varying vec2 tex;
+    
+    void main()
+    {
+        gl_FragColor = vec4( texture2D(u_diffuse, tex).xyz, 1);
     }
     `
     
     constructor(gl) {
         super(gl)
-        gl.clearColor(0.1, 0.1, 0.1, 1);
 
         this.fov = 30 * Math.PI / 180;
         this.zNear = 0.5;
@@ -27,8 +44,6 @@ import {m4, resizeCanvasToDisplaySize} from '../../lib/twgl-full'
 
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         const projection = m4.perspective(this.fov, aspect, this.zNear, this.zFar);
-        
-
         const camera = m4.lookAt(this.eye, this.target, this.up);
         const view = m4.inverse(camera);
         const viewProjection = m4.multiply(projection, view);
@@ -40,11 +55,36 @@ import {m4, resizeCanvasToDisplaySize} from '../../lib/twgl-full'
         this.uniforms.u_lightColor = [1, 1, 1, 1]
         this.uniforms.u_ambient = [0.05, 0.02, 0.02, 1]
         this.uniforms.u_specular = [0, 0, 0, 1]
-        this.uniforms.u_shininess = 50
+        this.uniforms.u_shininess = 30
         this.uniforms.u_specularFactor = 0
         this.uniforms.u_viewInverse = camera
         this.uniforms.u_world = this.world
         this.uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(this.world));
+
+        const arrays = {
+            positions: [
+                -1,-1, 0,
+                -1,1, 0,
+                1,-1, 0,
+                1,1, 0
+            ],
+            texcoord: [0,0,1,1,0,1,1,0],
+            indices: [
+                2,1,0,
+                1,2,3,
+            ]
+        }
+
+        this.bufferInfo = createBufferInfoFromArrays(gl, arrays);
+
+        const tex = createTexture(gl, {
+            min: gl.NEAREST,
+            mag: gl.NEAREST,
+            target: gl.TEXTURE_2D_ARRAY,
+            src: './res/stars_milky.jpg',
+        });
+
+        this.uniforms.u_diffuse = tex
     }
 
     
@@ -53,7 +93,6 @@ import {m4, resizeCanvasToDisplaySize} from '../../lib/twgl-full'
     }
 
     render(gl, time) {
-        //this.world = m4.rotationZ(time*0.001)
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
         const projection = m4.perspective(this.fov, aspect, this.zNear, this.zFar);
         const camera = m4.lookAt(this.eye, this.target, this.up);
@@ -65,12 +104,10 @@ import {m4, resizeCanvasToDisplaySize} from '../../lib/twgl-full'
         this.uniforms.u_world = this.world
         this.uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(this.world));
 
-        //super.render(gl, time)
         resizeCanvasToDisplaySize(gl.canvas);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-        
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        super.render(gl, time)
+        gl.clear(gl.DEPTH_BUFFER_BIT)    
     }
 }
 
