@@ -78,6 +78,76 @@ import '../../lib/lodash'
         if ( u_sun == 1 ) gl_FragColor = diffuseColor;
     }`
 
+    static vsGouraud = `
+    //Essential
+    uniform mat4 projection, modelview, normalMat;
+    uniform vec3 lightPos; // Light position
+
+    //Transformations
+    uniform mat4 u_transform;
+    uniform mat4 u_transform_inv;
+
+    
+    //Vertex attributes
+    attribute vec3 normal;
+    attribute vec3 position;
+    attribute vec2 texcoord;
+
+    //Vars
+    varying vec2 v_texCoord;
+    varying vec4 v_position;
+    varying vec3 vertPos;
+    varying vec3 normalInterp;
+    varying vec4 color;
+
+    //Gouraud
+    uniform float Ka;   // Ambient reflection coefficient
+    uniform float Kd;   // Diffuse reflection coefficient
+    uniform float Ks;   // Specular reflection coefficient
+    uniform float shininess; // Shininess
+    uniform vec3 ambientColor;
+    uniform vec3 diffuseColor;
+    uniform vec3 specularColor;
+
+
+    
+    void main() {
+        v_texCoord = texcoord;
+
+        v_position = u_transform * vec4(position,1.0);
+        v_position = modelview * v_position;
+        vertPos = vec3(v_position) / v_position.w;
+        normalInterp = vec3(normalMat * vec4(normal, 0.0));
+        gl_Position = projection * v_position;
+        
+        vec3 N = normalize(normalInterp);
+        vec3 L = normalize(lightPos - vertPos);
+        // Lambert's cosine law
+        float lambertian = max(dot(N, L), 0.0);
+        float specular = 0.0;
+        if(lambertian > 0.0) {
+            vec3 R = reflect(-L, N);      // Reflected light vector
+            vec3 V = normalize(-vertPos); // Vector to viewer
+            // Compute the specular term
+            float specAngle = max(dot(R, V), 0.0);
+            specular = pow(specAngle, shininess);
+        }
+        color = vec4(Ka * ambientColor + Kd * lambertian * diffuseColor + Ks * specular * specularColor, 1.0);
+
+    }`
+
+
+    static fsGouraud = `
+    precision mediump float;
+    varying vec4 color;
+    varying vec2 v_texCoord;
+    uniform sampler2D u_diffuse;
+    
+    void main() {
+      vec4 diffuseColor = texture2D(u_diffuse, v_texCoord);
+      gl_FragColor = color * diffuseColor;
+    }`
+
     static divs = 20;
 
     constructor(gl, radius, texturePath, vParent, isSun = false ) {
