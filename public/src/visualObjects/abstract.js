@@ -13,7 +13,7 @@ class VisualObject {
         }
         this.vParent = vParent
         this.programInfo = createProgramInfo(gl, [cl.vs, cl.fs])
-        this.uniforms = {}
+        this.uniforms = { u_model: m4.identity() }
         this.transforms = []
     }
 

@@ -8,78 +8,79 @@ import '../../lib/lodash'
  */
  class Planet extends VisualObject {
     static vs = `
-    uniform mat4 u_worldViewProjection;
-    uniform vec3 u_lightWorldPos;
-    uniform mat4 u_world;
-    uniform mat4 u_viewInverse;
-    uniform mat4 u_worldInverseTranspose;
-
-    uniform mat4 u_ligth_transform;
-    uniform mat4 u_transform;
-    uniform mat4 u_spin;
-    uniform mat4 u_orbit;
-
-    attribute vec4 position;
+    attribute vec3 position;
     attribute vec3 normal;
     attribute vec2 texcoord;
 
-    varying vec2 v_texCoord;
-    varying vec3 v_normal;
-    varying vec3 v_surfaceToLight;
-    varying vec3 v_surfaceToView;
-    varying vec4 v_position;
+    uniform mat4 u_projection, u_model, u_view, u_normalMat;
+
+    varying vec3 normalInterp;
+    varying vec3 vertPos;
+    varying vec2 tex;
     
     void main() {
-        v_texCoord = texcoord;
-        v_position = u_worldViewProjection * u_transform * position;
-        v_normal = (u_worldInverseTranspose * vec4(normal, 0)).xyz;
-        v_surfaceToLight = u_lightWorldPos - (u_ligth_transform * position).xyz;
-        v_surfaceToView = (u_viewInverse[3] - v_position).xyz;
-
-        gl_Position = v_position;
+        tex = texcoord;
+        vec4 vertPos4 = u_view * (u_model * vec4(position, 1.0));
+        vertPos = vertPos4.xyz;
+        normalInterp = vec3(u_normalMat * vec4(normal, 0.0));
+        gl_Position = u_projection * vertPos4;
     }`
 
     static fs = `
-    precision mediump float;
+    precision highp float;
 
-    uniform vec4 u_lightColor;
-    uniform vec4 u_ambient;
+    uniform float u_ka;   // Ambient reflection coefficient
+    uniform float u_kd;   // Diffuse reflection coefficient
+    uniform float u_ks;   // Specular reflection coefficient
+
+    uniform float u_shininess; 
+    
+    uniform vec4 u_ambientColor;
     uniform sampler2D u_diffuse;
-    uniform vec4 u_specular;
-    uniform float u_shininess;
-    uniform float u_specularFactor;
+    uniform vec4 u_specularColor;
+    uniform mat4 u_view;
+    uniform vec4 u_lightWorldPos; // Light position
+    uniform vec4 u_lightColor;
 
-    varying vec2 v_texCoord;
-    varying vec3 v_normal;
-    varying vec3 v_surfaceToLight;
-    varying vec3 v_surfaceToView;
-    varying vec4 v_position;
-    
-    vec4 lit(float l ,float h, float m) {
-      return vec4(1.0,
-                  max(l, 0.0),
-                  (l > 0.0) ? pow(max(0.0, h), m) : 0.0,
-                  1.0);
-    }
-    
+    uniform int u_sun;
+
+
+    varying vec3 normalInterp;  // Surface normal
+    varying vec3 vertPos;       // Vertex position
+    varying vec2 tex;
+
     void main() {
-      vec4 diffuseColor = texture2D(u_diffuse, v_texCoord);
-      vec3 a_normal = normalize(v_normal);
-      vec3 surfaceToLight = normalize(v_surfaceToLight);
-      vec3 surfaceToView = normalize(v_surfaceToView);
-      vec3 halfVector = normalize(surfaceToLight + surfaceToView);
-      vec4 litR = lit(dot(a_normal, surfaceToLight),
-                        dot(a_normal, halfVector), u_shininess);
-      vec4 outColor = vec4((
-      u_lightColor * (diffuseColor * litR.y + diffuseColor * u_ambient +
-                    u_specular * litR.z * u_specularFactor)).rgb,
-          diffuseColor.a);
-      gl_FragColor = outColor;
+
+        vec4 diffuseColor = texture2D(u_diffuse, tex);
+
+        vec3 N = normalize(normalInterp);
+
+        vec3 Lpos = (u_view * u_lightWorldPos).xyz;
+
+        vec3 L = normalize( Lpos - vertPos );
+
+        // Lambert's cosine law
+        float lambertian = max(dot(N, L), 0.0);
+        float specular = 0.0;
+        if(lambertian > 0.0) {
+            vec3 R = reflect(-L, N);      // Reflected light vector
+            vec3 V = normalize(-vertPos); // Vector to viewer
+            // Compute the specular term
+            float specAngle = max(dot(R, V), 0.0);
+            specular = pow(specAngle, u_shininess);
+        }
+
+        vec4 ambi = u_ka * u_ambientColor;
+        vec4 diff = u_kd * u_lightColor * lambertian * diffuseColor;
+        vec4 spec = u_ks * specular * u_specularColor;
+
+        if ( u_sun == 0 ) gl_FragColor = ambi + diff + spec;
+        if ( u_sun == 1 ) gl_FragColor = diffuseColor;
     }`
 
     static divs = 20;
 
-    constructor(gl, radius, texturePath, vParent ) {
+    constructor(gl, radius, texturePath, vParent, isSun = false ) {
         super(gl, vParent)
         this.bufferInfo = primitives.createSphereBufferInfo(gl, radius, Planet.divs, Planet.divs)
 
@@ -89,6 +90,8 @@ import '../../lib/lodash'
             target: gl.TEXTURE_2D_ARRAY,
             src: texturePath,
         })
+
+        this.uniforms.u_sun = isSun ? 1 : 0;
     }
 
     update(time) {
@@ -96,8 +99,13 @@ import '../../lib/lodash'
 
         const totalTrans = _.concat(this.transforms, _.filter(this.vParent.transforms, { isPriv: false } ))
 
-        this.uniforms.u_transform = _.reduceRight(totalTrans, (acc, t) => m4.multiply(acc, t.f(time)), m4.identity())        
-        this.uniforms.u_ligth_transform = _.reduce(totalTrans, (acc, t) => m4.multiply(acc, t.f(-time)), m4.identity())
+        this.uniforms.u_model = _.reduceRight(totalTrans, (acc, t) => m4.multiply(acc, t.f(time)), m4.identity())
+        
+        
+        this.uniforms.u_light_transform = _.reduce(totalTrans, (acc, t) => m4.multiply(acc, t.f(-time)), m4.identity())
+
+        this.uniforms.u_modelView = m4.multiply( this.uniforms.u_view, this.uniforms.u_model )
+        this.uniforms.u_normalMat = m4.transpose( this.uniforms.u_modelView ) 
     }
     
     render(gl, changeProg) {

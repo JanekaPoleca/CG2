@@ -38,29 +38,29 @@ import {m4, resizeCanvasToDisplaySize, createBufferInfoFromArrays, createTexture
         this.fov = 30 * Math.PI / 180
         this.zNear = 200
         this.zFar = 1000
-        this.eye = [0, 600, 0]
+        this.eye = [0, 0, 600]
         this.target = [0, 0, 0]
-        this.up = [0, 0, 1]
-        this.world = m4.identity()
+        this.up = [0, 1, 0]
 
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
         const projection = m4.perspective(this.fov, aspect, this.zNear, this.zFar)
         const camera = m4.lookAt(this.eye, this.target, this.up)
         const view = m4.inverse(camera)
-        const viewProjection = m4.multiply(projection, view)
         
+        this.uniforms.u_projection = projection
+        this.uniforms.u_view = view
+        
+        this.uniforms.u_lightWorldPos = [0, 0, 1, 1]
+        this.uniforms.u_lightColor = [1, .8, .8, 1]
 
-        this.uniforms.u_worldViewProjection = m4.multiply(viewProjection, this.world)
-        this.uniforms.u_transform = m4.identity()
-        this.uniforms.u_lightWorldPos = [0, 0, 0]
-        this.uniforms.u_lightColor = [1, 1, 1, 1]
-        this.uniforms.u_ambient = [0.05, 0.02, 0.02, 1]
-        this.uniforms.u_specular = [0, 0, 0, 1]
-        this.uniforms.u_shininess = 30
-        this.uniforms.u_specularFactor = 0
-        this.uniforms.u_viewInverse = camera
-        this.uniforms.u_world = this.world
-        this.uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(this.world))
+        this.uniforms.u_ambientColor = [0.05, 0.02, 0.02, 1]
+        this.uniforms.u_specularColor = [1, 0, 0, 1]
+
+        this.uniforms.u_ka = 1
+        this.uniforms.u_kd = 1
+        this.uniforms.u_ks = 1
+
+        this.uniforms.u_shininess = 80
 
         const arrays = {
             positions: [
@@ -69,10 +69,10 @@ import {m4, resizeCanvasToDisplaySize, createBufferInfoFromArrays, createTexture
                 1,-1, 0,
                 1,1, 0
             ],
-            texcoord: [0,0,1,1,0,1,1,0],
+            texcoord: [0,0,2,2,0,2,2,0],
             indices: [
-                2,1,0,
-                1,2,3,
+                0,3,1,
+                0,2,3
             ]
         }
 
@@ -94,15 +94,10 @@ import {m4, resizeCanvasToDisplaySize, createBufferInfoFromArrays, createTexture
 
     render(gl, changeProg) {
         const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
-        const projection = m4.perspective(this.fov, aspect, this.zNear, this.zFar)
         const camera = m4.lookAt(this.eye, this.target, this.up)
-        const view = m4.inverse(camera)
-        const viewProjection = m4.multiply(projection, view)
         
-        this.uniforms.u_worldViewProjection = m4.multiply(viewProjection, this.world)
+        this.uniforms.u_projection = m4.perspective(this.fov, aspect, this.zNear, this.zFar)
         this.uniforms.u_viewInverse = camera
-        this.uniforms.u_world = this.world
-        this.uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(this.world))
 
         resizeCanvasToDisplaySize(gl.canvas)
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
