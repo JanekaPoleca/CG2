@@ -37,7 +37,7 @@ const main = () => {
 
     let p3 = new Planet(gl, 7, '/res/clouds.jpg', universe)
     p3.addTimeTransform( t => m4.rotationZ(0.00002 *t), true)
-    p3.addTransform( m4.translation([72,0,0]))
+    p3.addTransform( m4.translation([250,0,0]))
     p3.addTimeTransform( t => m4.rotationZ(0.00007 *t))
 
     let p4 = new Planet(gl, 12, '/res/moon.jpg', universe)
