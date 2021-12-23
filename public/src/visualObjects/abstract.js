@@ -40,14 +40,13 @@ class VisualObject {
         drawBufferInfo(gl, bufferInfo)
     }
 
-    addTransform( trans ) {
-        this.transforms.push( (time) => trans )
+    addTransform( trans, priv = false ) {
+        this.transforms.push( { isPriv: priv, f: (time) => trans } )
     }
 
-    addTimeTransform( func ) {
-        this.transforms.push( func )
+    addTimeTransform( func, priv = false ) {
+        this.transforms.push( { isPriv: priv, f: func } )
     }
-    
 }
 
 export default VisualObject

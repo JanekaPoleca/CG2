@@ -94,10 +94,10 @@ import '../../lib/lodash'
     update(time) {
         super.update()
 
-        const totalTrans = _.concat(this.transforms, this.vParent.transforms)
+        const totalTrans = _.concat(this.transforms, _.filter(this.vParent.transforms, { isPriv: false } ))
 
-        this.uniforms.u_transform = _.reduceRight(totalTrans, (acc, t) => m4.multiply(acc, t(time)), m4.identity())        
-        this.uniforms.u_ligth_transform = _.reduce(totalTrans, (acc, t) => m4.multiply(acc, t(-time)), m4.identity())
+        this.uniforms.u_transform = _.reduceRight(totalTrans, (acc, t) => m4.multiply(acc, t.f(time)), m4.identity())        
+        this.uniforms.u_ligth_transform = _.reduce(totalTrans, (acc, t) => m4.multiply(acc, t.f(-time)), m4.identity())
     }
     
     render(gl, changeProg) {

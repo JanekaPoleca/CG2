@@ -1,9 +1,6 @@
 import * as twgl from '../lib/twgl-full'
 import Universe from './visualObjects/universe'
 import Planet from './visualObjects/planet'
-import Star from './visualObjects/star'
-import Satellite from './visualObjects/satellite'
-import Torus from './visualObjects/torus'
 
 const {m4} = twgl
 
@@ -28,11 +25,11 @@ const main = () => {
 
     let sun = new Planet(gl, 40, './res/sun.jpg', universe);
 
-    sun.addTimeTransform( t => m4.rotationZ(-0.01 * t) )
+    sun.addTimeTransform( t => m4.rotationZ(-0.01 * t), true )
     sun.addTransform( m4.translation([200, 0, 0]) )
     sun.addTimeTransform( t => m4.rotationZ(0.0005 * t) )
 
-    
+    /*
     let p1 = new Planet(gl, 20, './res/mars.jpg', sun);
     p1.addTransform( m4.translation([70, 0, 0]) );
     p1.addTimeTransform( t => m4.rotationZ(0.0008 * t) )
@@ -99,7 +96,7 @@ const main = () => {
     let planets =  [universe, star, p1, p2, p3, s1, p4, p5, s2, s3, s4, p6, r1, c1];
     */
 
-    let planets = [universe, sun, p1];
+    let planets = [universe, sun];
 
     const render = time => {
         planets.forEach(p => p.update(time))
