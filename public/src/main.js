@@ -48,27 +48,27 @@ const main = () => {
     let p5 = new Planet(gl, 10, '/res/jupiter.jpg', universe)
     p5.addTimeTransform( t => m4.rotationZ(0.001 *t), true)
     p5.addTransform( m4.translation([150,0,0]))
-    p5.addTimeTransform( t => m4.rotationZ(0.011 *t))
+    p5.addTimeTransform( t => m4.rotationZ(0.0011 *t))
 
     let s2 = new Planet(gl, 2, '/res/ceres_fictional.jpg', p5)
     s2.addTimeTransform( t => m4.rotationZ(0.1 *t) , true)
     s2.addTransform( m4.translation([13,0,0]))
-    s2.addTimeTransform( t => m4.rotationZ(0.1 *t))
+    s2.addTimeTransform( t => m4.rotationZ(0.0001 *t))
 
     let s3 = new Planet(gl, 4, '/res/saturn.jpg', p5)
     s3.addTimeTransform( t => m4.rotationZ(0.05 *t), true)
     s3.addTransform( m4.translation([25,0,0]))
-    s3.addTimeTransform( t => m4.rotationZ(0.07 *t))
+    s3.addTimeTransform( t => m4.rotationZ(0.0007 *t))
 
     let s4 = new Planet(gl, 1, '/res/uranus.jpg', s3)
     s4.addTimeTransform( t => m4.rotationZ(0.5 *t), true)
     s4.addTransform( m4.translation([6,0,0]))
-    s4.addTimeTransform( t => m4.rotationZ(0.5 *t))
+    s4.addTimeTransform( t => m4.rotationZ(0.0005 *t))
 
     let p6 = new Planet(gl, 20, '/res/jupiter.jpg', universe)
     p6.addTimeTransform( t => m4.rotationZ(0.002 *t), true)
     p6.addTransform( m4.translation([210,0,0]))
-    p6.addTimeTransform( t => m4.rotationZ(0.002 *t))
+    p6.addTimeTransform( t => m4.rotationZ(0.0002 *t))
 
     let planets =  [universe, star, p1, p2, p3, p4, p5, s2, s3, s4, p6]
 
