@@ -32,7 +32,7 @@ import {m4, primitives} from '../../lib/twgl-full'
         super(gl, parent)
         this.bufferInfo = primitives.createTorusBufferInfo(gl, radius, thickness, radialSub, bodySub)
 
-        this.transformations = []
+        this.transforms = []
 
     }
 
@@ -41,8 +41,8 @@ import {m4, primitives} from '../../lib/twgl-full'
 
         let totalTrans = m4.identity();
 
-        for(var i=this.transformations.length-1; i>=0; i--){
-            totalTrans = m4.multiply(this.transformations[i](time), totalTrans)
+        for(var i=this.transforms.length-1; i>=0; i--){
+            totalTrans = m4.multiply(this.transforms[i](time), totalTrans)
         }
         
         
@@ -56,7 +56,7 @@ import {m4, primitives} from '../../lib/twgl-full'
     }
 
     addTranslation(x, y, z) {
-        this.transformations.push( (time) => { return [
+        this.transforms.push( (time) => { return [
             1,0,0,x,
             0,1,0,y,
             0,0,1,z,
@@ -65,15 +65,15 @@ import {m4, primitives} from '../../lib/twgl-full'
     }
 
     addRotationX(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationX(degreesToRad(alpha)* (staticRotation ? 1 : time))});
+        this.transforms.push( (time) => { return m4.rotationX(degreesToRad(alpha)* (staticRotation ? 1 : time))});
     }
 
     addRotationY(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationY(degreesToRad(alpha)* (staticRotation ? 1 : time))});
+        this.transforms.push( (time) => { return m4.rotationY(degreesToRad(alpha)* (staticRotation ? 1 : time))});
     }
 
     addRotationZ(alpha, staticRotation=false){
-        this.transformations.push( (time) => { return m4.rotationZ(degreesToRad(alpha)* (staticRotation ? 1 : time))});
+        this.transforms.push( (time) => { return m4.rotationZ(degreesToRad(alpha)* (staticRotation ? 1 : time))});
     }
 
 }

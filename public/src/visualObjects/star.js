@@ -79,7 +79,7 @@ import {m4, primitives, createTexture} from '../../lib/twgl-full'
         super(gl, parent)
         this.bufferInfo = primitives.createSphereBufferInfo(gl, radius, divs, divs)
 
-        this.transformations = []
+        this.transforms = []
 
         this.spinMat = time => m4.rotationZ(degreesToRad(spinSpeed)*time)
         this.OrbitMat = time => m4.rotationZ(degreesToRad(orbitSpeed)*time)
@@ -100,8 +100,8 @@ import {m4, primitives, createTexture} from '../../lib/twgl-full'
 
         let totalTrans = m4.identity();
 
-        for(var i=this.transformations.length-1; i>=0; i--){
-            totalTrans = m4.multiply(this.transformations[i](time), totalTrans)
+        for(var i=this.transforms.length-1; i>=0; i--){
+            totalTrans = m4.multiply(this.transforms[i](time), totalTrans)
         }
 
         this.uniforms.u_spin = this.spinMat(time)

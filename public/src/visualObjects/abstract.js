@@ -1,43 +1,53 @@
 import {m4, createProgramInfo, setBuffersAndAttributes, setUniforms, drawBufferInfo} from '../../lib/twgl-full'
+import '../../lib/lodash'
 
 /**
  * VisualObject Interface Class
  */
 class VisualObject {
 
-    constructor(gl, parent) {
+    constructor(gl, vParent) {
         let cl = this.constructor
         if ( cl === VisualObject ) {
             throw 'VisualObject is not instantiable'
         }
-        this.parent = parent
+        this.vParent = vParent
         this.programInfo = createProgramInfo(gl, [cl.vs, cl.fs])
         this.uniforms = {}
+        this.transforms = []
     }
 
     update() {
-        if (this.parent) {
-            this.uniforms = {...this.parent.uniforms, ...this.uniforms}
+        let {uniforms, vParent} = this
+        if (vParent) {
+            this.uniforms = {...vParent.uniforms, ...uniforms}
         }
     }
 
-    render(gl, time) {
+    render(gl, changeProg = true) {
         const {programInfo, bufferInfo, uniforms} = this
 
         if (!programInfo) {
             throw 'No Program so it cant render'
         }
 
-        if(this.parent){
-            this.uniforms.u_transform = m4.multiply(this.uniforms.u_transform, this.parent.uniforms.u_transform);
+        if (changeProg) {
+            gl.useProgram(programInfo.program)
+            setBuffersAndAttributes(gl, programInfo, bufferInfo)
         }
 
-        //TODO: ver se da para nao substituir o programa quando se da render a dois objetos do mesmo tipo
-        gl.useProgram(programInfo.program)
-        setBuffersAndAttributes(gl, programInfo, bufferInfo)
         setUniforms(programInfo, uniforms)
         drawBufferInfo(gl, bufferInfo)
     }
+
+    addTransform( trans ) {
+        this.transforms.push( (time) => trans )
+    }
+
+    addTimeTransform( func ) {
+        this.transforms.push( func )
+    }
+    
 }
 
 export default VisualObject
